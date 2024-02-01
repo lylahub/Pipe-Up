@@ -35,6 +35,14 @@ $ echo $?
 
 2
 
+python -m unittest
+
+      8       8      73
+ ----------------------------------------------------------------------
+Ran 3 tests in 0.281s
+
+OK
+
 ## Cleaning up
 
 make clean
