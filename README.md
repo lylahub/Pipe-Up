@@ -12,21 +12,27 @@ make
 ## Running
 
 $ ./pipe
+
 usage: ./pipe CMD...
 
 $ echo $?
+
 22
 
 $./pipe ls wc
+
       7       7      63
 
 $ echo $?
+
 0
 
 $ ./pipe ls nonexistent_command
+
 pipe: could not execute nonexistent_command
 
 $ echo $?
+
 2
 
 ## Cleaning up
