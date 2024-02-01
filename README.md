@@ -17,9 +17,8 @@ usage: ./pipe CMD...
 $ echo $?
 22
 
-
-$ ./pipe ls wc
-      8      8     68
+$./pipe ls wc
+      7       7      63
 
 $ echo $?
 0
