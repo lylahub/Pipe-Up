@@ -12,34 +12,34 @@ make
 ## Running
 
 $ ./pipe
-
-usage: ./pipe CMD...
-
 $ echo $?
-
 22
 
-$./pipe ls wc
-
+./pipe ls cat wc
       7       7      63
 
+$ ./pipe ls wc
+      7       7      63
 $ echo $?
-
 0
 
+$ ./pipe ls cat
+Makefile
+pipe
+pipe.c
+pipe.o
+README.md
+test_lab1.py
+
 $ ./pipe ls nonexistent_command
-
-pipe: could not execute nonexistent_command
-
 $ echo $?
-
 2
 
 python -m unittest
 
       8       8      73
  ----------------------------------------------------------------------
-Ran 3 tests in 0.281s
+Ran 3 tests in 0.152s
 
 OK
 

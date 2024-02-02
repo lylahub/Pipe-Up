@@ -10,25 +10,37 @@ int main(int argc, char *argv[])
 	// no argument
 	if (argc == 1) {
 		errno = EINVAL;
-		fprintf(stderr, "usage: ./pipe CMD...\n");
 		exit(errno);
 	};
 
 	// loop through provided arguments
 	for (int i = 1; i < argc; i++) {
 		
-		char* prog = argv[i];
-
-		// create pipe before forking
+		// pipe before forking
 		int pipe_fd[2];
 		pipe(pipe_fd);
 
 		int pid = fork();
-		if (pid < 0) {
-			fprintf(stderr, "fatal: fork failed\n");
-			exit(errno);
+		// parent
+		if (pid > 0) {
+			// parent's stdin -> pipe's read-end
+			dup2(pipe_fd[0], 0);
+
+			// close pipe
+			close(pipe_fd[0]);
+			close(pipe_fd[1]);
+
+			int status;
+			waitpid(pid, &status, 0);
+
+			int exit_code = WEXITSTATUS(status);
+
+			if (WIFEXITED(status) && exit_code) {
+				// fail
+				exit(exit_code);
+			}
 		}
-		// child process
+		// child
 		else if (pid == 0) {
 			
 			if (i != argc-1) {
@@ -38,28 +50,13 @@ int main(int argc, char *argv[])
 			close(pipe_fd[0]);
 			close(pipe_fd[1]);
 
-			execlp(prog, prog);
+			execlp(argv[i], argv[i]);
 
 			return errno;
 		}
-		// parent process
+		// fail to create a fork
 		else {
-			// connect parent's stdin to pipe's read-end
-			dup2(pipe_fd[0], 0);
-
-			// close pipe
-			close(pipe_fd[0]);
-			close(pipe_fd[1]);
-
-			// suspend execution until child process finishes
-			int status;
-			waitpid(pid, &status, 0);
-
-			int exit_code = WEXITSTATUS(status);
-			if (WIFEXITED(status) && exit_code) {
-				fprintf(stderr, "pipe: could not execute %s\n", prog);
-				exit(exit_code);
-			}
+			exit(errno);
 		}
 	}
 	return 0;
